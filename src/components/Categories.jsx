@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 export const Categories = () => {
-  const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытие'];
+  const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
   const [activeCategory, setActiveCategory] = useState(0);
 
   const onClickCategory = index => {
