@@ -8,8 +8,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 10px;
 
-    @media (max-width: 645px) {
+    @media (max-width: 750px) {
       flex-direction: column;
       gap: 20px;
     }
