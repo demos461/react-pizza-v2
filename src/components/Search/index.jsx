@@ -1,11 +1,35 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import styles from './search.module.scss';
+import { useDispatch } from 'react-redux';
+import { setSearchValue } from '../../store/slices/pizzasSlice';
+import { useDebounce } from '../../hooks/useDebounce';
 
 export const Search = () => {
+  const dispatch = useDispatch();
+  const [value, setValue] = useState('');
+
+  const debouncedSetSearchValue = useDebounce(
+    value => dispatch(setSearchValue(value)),
+    1000,
+  );
+
+  const inputRef = useRef();
+
+  const onClickClear = () => {
+    dispatch(setSearchValue(''));
+    setValue('');
+    inputRef.current.focus();
+  };
+
+  const onSearchChange = e => {
+    setValue(e.currentTarget.value);
+    debouncedSetSearchValue(e.currentTarget.value);
+  };
+
   return (
     <div className={styles.root}>
       <svg
-        className={styles.icon}
+        className={styles.searchIcon}
         enableBackground="new 0 0 32 32"
         id="Editable-line"
         version="1.1"
@@ -38,7 +62,22 @@ export const Search = () => {
           y2="20.366"
         />
       </svg>
-      <input className={styles.input} type="text" placeholder={'Поиск пиццы...'} />
+      <input
+        ref={inputRef}
+        className={styles.input}
+        value={value}
+        onChange={onSearchChange}
+        type="text"
+        placeholder={'Поиск пиццы...'}
+      />
+      <svg
+        onClick={onClickClear}
+        className={styles.closeIcon}
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z" />
+      </svg>
     </div>
   );
 };
