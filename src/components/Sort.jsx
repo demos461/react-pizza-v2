@@ -1,20 +1,23 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setSort } from '../store/slices/filterSlice';
+import { useSearchParams } from 'react-router-dom';
 
 export const Sort = () => {
-  const sort = useSelector(state => state.filter.sort);
-  const dispatch = useDispatch();
-  const [isOpen, setIsOpen] = useState(false);
-
   const sortList = [
     { name: 'популярности', sortProperty: 'rating' },
     { name: 'цене', sortProperty: 'price' },
     { name: 'алфавиту', sortProperty: 'title' },
   ];
 
-  const onClickSortPopup = value => {
-    dispatch(setSort(value));
+  const [activeSort, setActiveSort] = useState(sortList[0].name);
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const categoryIndex = searchParams.get('category') || '';
+  const sortParam = searchParams.get('sortBy') || '';
+
+  const onClickSortPopup = obj => {
+    setSearchParams({ category: categoryIndex, sortBy: obj.sortProperty });
+    setActiveSort(obj.name);
     setIsOpen(false);
   };
 
@@ -34,7 +37,7 @@ export const Sort = () => {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setIsOpen(!isOpen)}>{sort.name}</span>
+        <span onClick={() => setIsOpen(!isOpen)}>{activeSort}</span>
       </div>
       {isOpen && (
         <div className="sort__popup">
@@ -42,7 +45,7 @@ export const Sort = () => {
             {sortList.map(obj => (
               <li
                 key={obj.sortProperty}
-                className={obj.sortProperty === sort.sortProperty ? 'active' : null}
+                className={obj.sortProperty === sortParam ? 'active' : null}
                 onClick={() => onClickSortPopup(obj)}
               >
                 {obj.name}

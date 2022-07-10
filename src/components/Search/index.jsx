@@ -1,29 +1,25 @@
 import React, { useRef, useState } from 'react';
 import styles from './search.module.scss';
-import { useDispatch } from 'react-redux';
-import { setSearchValue } from '../../store/slices/pizzasSlice';
 import { useDebounce } from '../../hooks/useDebounce';
+import { useSearchParams } from 'react-router-dom';
 
 export const Search = () => {
-  const dispatch = useDispatch();
-  const [value, setValue] = useState('');
-
-  const debouncedSetSearchValue = useDebounce(
-    value => dispatch(setSearchValue(value)),
-    1000,
-  );
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchQuery = searchParams.get('search') || '';
+  const [value, setValue] = useState(searchQuery);
+  const debouncedSetSearchParams = useDebounce(value => setSearchParams(value), 500);
 
   const inputRef = useRef();
 
   const onClickClear = () => {
-    dispatch(setSearchValue(''));
+    setSearchParams({ search: '' });
     setValue('');
     inputRef.current.focus();
   };
 
   const onSearchChange = e => {
     setValue(e.currentTarget.value);
-    debouncedSetSearchValue(e.currentTarget.value);
+    debouncedSetSearchParams({ search: e.currentTarget.value });
   };
 
   return (

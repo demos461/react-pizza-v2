@@ -1,14 +1,15 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { setCategory } from '../store/slices/filterSlice';
+import { useSearchParams } from 'react-router-dom';
 
 export const Categories = () => {
-  const category = useSelector(state => state.filter.category);
-  const dispatch = useDispatch();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
 
+  const sortQuery = searchParams.get('sortBy') || '';
+  const categoryQuery = searchParams.get('category') || '';
+
   const onClickCategory = i => {
-    dispatch(setCategory(i));
+    setSearchParams({ sortBy: sortQuery, category: i });
   };
 
   return (
@@ -17,7 +18,7 @@ export const Categories = () => {
         {categories.map((categoryName, index) => (
           <li
             key={index}
-            className={category === index ? 'active' : null}
+            className={+categoryQuery === index ? 'active' : null}
             onClick={() => onClickCategory(index)}
           >
             {categoryName}
