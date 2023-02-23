@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Categories } from '../components/Categories';
 import { Sort } from '../components/Sort';
 import { Skeleton } from '../components/Pizza/Skeleton';
 import { Pizza } from '../components/Pizza';
-import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchPizzas } from '../store/slices/pizzasSlice';
 
 export const Home = () => {
-  const [pizzasItems, setPizzasItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { items, status } = useSelector(state => state.pizzas);
+  const dispatch = useDispatch();
 
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get('search') || '';
@@ -16,31 +17,35 @@ export const Home = () => {
   const sortQuery = searchParams.get('sortBy') || '';
 
   const pizzasSkeleton = [...new Array(4)].map((_, index) => <Skeleton key={index} />);
-  const pizzas = pizzasItems.map(pizza => <Pizza key={pizza.id} {...pizza} />);
+  const pizzas = items && items.map(pizza => <Pizza key={pizza.id} {...pizza} />);
 
   useEffect(() => {
-    setIsLoading(true);
-    axios
-      .get(
-        `https://62a62676b9b74f766a447cc7.mockapi.io/items?search=${searchQuery}&${
-          categoryQuery > 0 ? `category=${categoryQuery}` : ''
-        }&sortBy=${sortQuery}&order=desc`,
-      )
-      .then(res => {
-        setPizzasItems(res.data);
-        setIsLoading(false);
-      });
+    dispatch(fetchPizzas({
+      searchQuery,
+      categoryQuery,
+      sortQuery,
+    }));
     window.scrollTo(0, 0);
-  }, [categoryQuery, sortQuery, searchQuery]);
+  }, [dispatch, categoryQuery, sortQuery, searchQuery]);
 
   return (
     <>
-      <div className="content__top">
+      <div className='content__top'>
         <Categories />
         <Sort />
       </div>
-      <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">{isLoading ? pizzasSkeleton : pizzas}</div>
+      <h2 className='content__title'>Все пиццы</h2>
+      {
+        status === 'error'
+          ? (
+            <div className='content__error-info'>
+              <h2>Произошла ошибка 😕</h2>
+              <p>К сожалению, не удалось получить пиццы. Попробуйте повторить попытку позже.</p>
+            </div>
+          )
+          : <div className='content__items'>{status === 'loading' ? pizzasSkeleton : pizzas}</div>
+
+      }
     </>
   );
 };
