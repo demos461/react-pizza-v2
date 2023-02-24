@@ -5,10 +5,10 @@ import { Skeleton } from '../components/Pizza/Skeleton';
 import { Pizza } from '../components/Pizza';
 import { useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchPizzas } from '../store/slices/pizzasSlice';
+import { fetchPizzas, selectPizzasData } from '../store/slices/pizzasSlice';
 
 export const Home = () => {
-  const { items, status } = useSelector(state => state.pizzas);
+  const { items, status } = useSelector(selectPizzasData);
   const dispatch = useDispatch();
 
   const [searchParams] = useSearchParams();
