@@ -1,9 +1,9 @@
 import { useSearchParams } from 'react-router-dom';
 
+const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
+
 export const Categories = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
 
   const sortQuery = searchParams.get('sortBy') || '';
   const categoryQuery = searchParams.get('category') || '';
@@ -13,7 +13,7 @@ export const Categories = () => {
   };
 
   return (
-    <div className="categories">
+    <div className='categories'>
       <ul>
         {categories.map((categoryName, index) => (
           <li

@@ -9,7 +9,9 @@ export const Header = () => {
   const { pathname } = useLocation();
 
   const totalCount = items.reduce((sum, item) => sum + item.count, 0);
-  
+
+  const searchComponent = pathname !== '/cart' ? <Search /> : null;
+
   return (
     <div className='header'>
       <div className='container'>
@@ -22,7 +24,7 @@ export const Header = () => {
             </div>
           </div>
         </Link>
-        {pathname !== '/cart' ? <Search /> : null}
+        {searchComponent}
         <div className='header__cart'>
           <Link to='cart' className='button button--cart'>
             <span>{totalPrice} ₽</span>
