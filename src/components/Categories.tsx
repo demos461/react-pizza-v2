@@ -1,15 +1,16 @@
+import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
 
-export const Categories = () => {
+export const Categories: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const sortQuery = searchParams.get('sortBy') || '';
   const categoryQuery = searchParams.get('category') || '';
 
-  const onClickCategory = i => {
-    setSearchParams({ sortBy: sortQuery, category: i });
+  const onClickCategory = (index: number) => {
+    setSearchParams({ sortBy: sortQuery, category: String(index) });
   };
 
   return (
@@ -18,7 +19,7 @@ export const Categories = () => {
         {categories.map((categoryName, index) => (
           <li
             key={index}
-            className={+categoryQuery === index ? 'active' : null}
+            className={+categoryQuery === index ? 'active' : undefined}
             onClick={() => onClickCategory(index)}
           >
             {categoryName}

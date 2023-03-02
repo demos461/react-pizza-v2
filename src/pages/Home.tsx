@@ -7,7 +7,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchPizzas, selectPizzasData } from '../store/slices/pizzasSlice';
 
-export const Home = () => {
+export const Home: React.FC = () => {
   const { items, status } = useSelector(selectPizzasData);
   const dispatch = useDispatch();
 
@@ -17,9 +17,10 @@ export const Home = () => {
   const sortQuery = searchParams.get('sortBy') || '';
 
   const pizzasSkeleton = [...new Array(4)].map((_, index) => <Skeleton key={index} />);
-  const pizzas = items && items.map(pizza => <Pizza key={pizza.id} {...pizza} />);
+  const pizzas = items && items.map((pizza: any) => <Pizza key={pizza.id} {...pizza} />);
 
   useEffect(() => {
+    // @ts-ignore
     dispatch(fetchPizzas({
       searchQuery,
       categoryQuery,

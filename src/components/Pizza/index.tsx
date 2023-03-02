@@ -1,10 +1,19 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem, selectCartItemById } from '../../store/slices/cartSlice';
 
+type PizzaPropsType = {
+  id: number,
+  title: string,
+  price: string,
+  imageUrl: string,
+  sizes: number[],
+  types: number[]
+}
+
 const typeNames = ['тонкое', 'традиционное'];
 
-export const Pizza = ({ id, title, price, imageUrl, sizes, types }) => {
+export const Pizza: React.FC<PizzaPropsType> = ({ id, title, price, imageUrl, sizes, types }) => {
   const dispatch = useDispatch();
   const cartItem = useSelector(selectCartItemById(id));
   const [activeType, setActiveType] = useState(0);
@@ -34,7 +43,7 @@ export const Pizza = ({ id, title, price, imageUrl, sizes, types }) => {
             {types.map(typeId => (
               <li
                 key={typeId}
-                className={activeType === typeId ? 'active' : null}
+                className={activeType === typeId ? 'active' : undefined}
                 onClick={() => setActiveType(typeId)}
               >
                 {typeNames[typeId]}
@@ -45,7 +54,7 @@ export const Pizza = ({ id, title, price, imageUrl, sizes, types }) => {
             {sizes.map((size, index) => (
               <li
                 key={`${size}-${index}`}
-                className={activeSize === index ? 'active' : null}
+                className={activeSize === index ? 'active' : undefined}
                 onClick={() => setActiveSize(index)}
               >
                 {size} см.

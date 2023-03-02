@@ -1,30 +1,37 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-const sortList = [
+
+type SortItemType = {
+  name: string
+  sortProperty: 'rating' | 'price' | 'title'
+}
+
+const sortList: SortItemType[] = [
   { name: 'популярности', sortProperty: 'rating' },
   { name: 'цене', sortProperty: 'price' },
   { name: 'алфавиту', sortProperty: 'title' },
 ];
 
-export const Sort = () => {
+export const Sort: React.FC = () => {
 
   const [activeSort, setActiveSort] = useState(sortList[0].name);
   const [isOpen, setIsOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const sortRef = useRef();
+  const sortRef = useRef<HTMLDivElement>(null);
 
   const categoryIndex = searchParams.get('category') || '';
   const sortParam = searchParams.get('sortBy') || '';
 
-  const onClickSortPopup = obj => {
+  const onClickSortPopup = (obj: SortItemType) => {
     setSearchParams({ category: categoryIndex, sortBy: obj.sortProperty });
     setActiveSort(obj.name);
     setIsOpen(false);
   };
 
   useEffect(() => {
-    const handleClickOutside = e => {
+    const handleClickOutside = (e: Event) => {
+      // @ts-ignore
       if (!e.composedPath().includes(sortRef.current)) {
         setIsOpen(false);
       }
@@ -58,7 +65,7 @@ export const Sort = () => {
             {sortList.map(obj => (
               <li
                 key={obj.sortProperty}
-                className={obj.sortProperty === sortParam ? 'active' : null}
+                className={obj.sortProperty === sortParam ? 'active' : undefined}
                 onClick={() => onClickSortPopup(obj)}
               >
                 {obj.name}

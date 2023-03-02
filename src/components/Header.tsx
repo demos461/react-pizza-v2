@@ -3,12 +3,13 @@ import { Link, useLocation } from 'react-router-dom';
 import { Search } from './Search';
 import { useSelector } from 'react-redux';
 import { selectCart } from '../store/slices/cartSlice';
+import React from 'react';
 
-export const Header = () => {
+export const Header: React.FC = () => {
   const { items, totalPrice } = useSelector(selectCart);
   const { pathname } = useLocation();
 
-  const totalCount = items.reduce((sum, item) => sum + item.count, 0);
+  const totalCount = items.reduce((sum: number, item: any) => sum + item.count, 0);
 
   const searchComponent = pathname !== '/cart' ? <Search /> : null;
 
