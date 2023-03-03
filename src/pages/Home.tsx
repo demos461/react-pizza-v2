@@ -4,12 +4,13 @@ import { Sort } from '../components/Sort';
 import { Skeleton } from '../components/Pizza/Skeleton';
 import { Pizza } from '../components/Pizza';
 import { useSearchParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import { fetchPizzas, selectPizzasData } from '../store/slices/pizzasSlice';
+import { useAppSelector } from '../hooks/useAppSelector';
+import { useAppDispatch } from '../hooks/useAppDispatch';
 
 export const Home: React.FC = () => {
-  const { items, status } = useSelector(selectPizzasData);
-  const dispatch = useDispatch();
+  const { items, status } = useAppSelector(selectPizzasData);
+  const dispatch = useAppDispatch();
 
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get('search') || '';

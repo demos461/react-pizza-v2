@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { addItem, selectCartItemById } from '../../store/slices/cartSlice';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { useAppSelector } from '../../hooks/useAppSelector';
 
 type PizzaPropsType = {
   id: number,
   title: string,
-  price: string,
+  price: number,
   imageUrl: string,
   sizes: number[],
   types: number[]
@@ -14,8 +15,8 @@ type PizzaPropsType = {
 const typeNames = ['тонкое', 'традиционное'];
 
 export const Pizza: React.FC<PizzaPropsType> = ({ id, title, price, imageUrl, sizes, types }) => {
-  const dispatch = useDispatch();
-  const cartItem = useSelector(selectCartItemById(id));
+  const dispatch = useAppDispatch();
+  const cartItem = useAppSelector(selectCartItemById(id));
   const [activeType, setActiveType] = useState(0);
   const [activeSize, setActiveSize] = useState(0);
 
@@ -29,6 +30,7 @@ export const Pizza: React.FC<PizzaPropsType> = ({ id, title, price, imageUrl, si
       imageUrl,
       type: typeNames[activeType],
       size: sizes[activeSize],
+      count: 0,
     };
     dispatch(addItem(item));
   };

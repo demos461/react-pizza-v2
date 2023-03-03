@@ -14,7 +14,6 @@ const sortList: SortItemType[] = [
 ];
 
 export const Sort: React.FC = () => {
-
   const [activeSort, setActiveSort] = useState(sortList[0].name);
   const [isOpen, setIsOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -30,9 +29,8 @@ export const Sort: React.FC = () => {
   };
 
   useEffect(() => {
-    const handleClickOutside = (e: Event) => {
-      // @ts-ignore
-      if (!e.composedPath().includes(sortRef.current)) {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (sortRef.current && !e.composedPath().includes(sortRef.current)) {
         setIsOpen(false);
       }
     };
