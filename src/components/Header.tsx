@@ -1,7 +1,7 @@
 import logoSvg from '../assets/img/pizza-logo.svg';
 import { Link, useLocation } from 'react-router-dom';
 import { Search } from './Search';
-import { selectCart } from '../store/slices/cartSlice';
+import { CartItemsType, selectCart } from '../store/slices/cartSlice';
 import React from 'react';
 import { useAppSelector } from '../hooks/useAppSelector';
 
@@ -9,7 +9,10 @@ export const Header: React.FC = () => {
   const { items, totalPrice } = useAppSelector(selectCart);
   const { pathname } = useLocation();
 
-  const totalCount = items.reduce((sum: number, item: any) => sum + item.count, 0);
+  const totalCount = items.reduce(
+    (sum: number, item: CartItemsType) => sum + item.count,
+    0,
+  );
 
   const searchComponent = pathname !== '/cart' ? <Search /> : null;
 

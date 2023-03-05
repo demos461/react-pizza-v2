@@ -4,7 +4,11 @@ import { Sort } from '../components/Sort';
 import { Skeleton } from '../components/Pizza/Skeleton';
 import { Pizza } from '../components/Pizza';
 import { useSearchParams } from 'react-router-dom';
-import { fetchPizzas, selectPizzasData } from '../store/slices/pizzasSlice';
+import {
+  fetchPizzas,
+  PizzaItemType,
+  selectPizzasData,
+} from '../store/slices/pizzasSlice';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 
@@ -18,15 +22,16 @@ export const Home: React.FC = () => {
   const sortQuery = searchParams.get('sortBy') || '';
 
   const pizzasSkeleton = [...new Array(4)].map((_, index) => <Skeleton key={index} />);
-  const pizzas = items && items.map((pizza: any) => <Pizza key={pizza.id} {...pizza} />);
+  const pizzas = items.map((pizza: PizzaItemType) => <Pizza key={pizza.id} {...pizza} />);
 
   useEffect(() => {
-    // @ts-ignore
-    dispatch(fetchPizzas({
-      searchQuery,
-      categoryQuery,
-      sortQuery,
-    }));
+    dispatch(
+      fetchPizzas({
+        searchQuery,
+        categoryQuery,
+        sortQuery,
+      }),
+    );
     window.scrollTo(0, 0);
   }, [dispatch, categoryQuery, sortQuery, searchQuery]);
 
@@ -37,17 +42,18 @@ export const Home: React.FC = () => {
         <Sort />
       </div>
       <h2 className='content__title'>Все пиццы</h2>
-      {
-        status === 'error'
-          ? (
-            <div className='content__error-info'>
-              <h2>Произошла ошибка 😕</h2>
-              <p>К сожалению, не удалось получить пиццы. Попробуйте повторить попытку позже.</p>
-            </div>
-          )
-          : <div className='content__items'>{status === 'loading' ? pizzasSkeleton : pizzas}</div>
-
-      }
+      {status === 'error' ? (
+        <div className='content__error-info'>
+          <h2>Произошла ошибка 😕</h2>
+          <p>
+            К сожалению, не удалось получить пиццы. Попробуйте повторить попытку позже.
+          </p>
+        </div>
+      ) : (
+        <div className='content__items'>
+          {status === 'loading' ? pizzasSkeleton : pizzas}
+        </div>
+      )}
     </>
   );
 };

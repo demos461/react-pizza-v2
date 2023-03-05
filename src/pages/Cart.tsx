@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { CartItem } from '../components/CartItem';
-import { clearItems, selectCart } from '../store/slices/cartSlice';
 import { CartEmpty } from '../components/CartEmpty';
+import { CartItemsType, clearItems, selectCart } from '../store/slices/cartSlice';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
 
@@ -14,7 +14,10 @@ export const Cart: React.FC = () => {
     dispatch(clearItems());
   };
 
-  const totalCount = items.reduce((sum: number, item: any) => sum + item.count, 0);
+  const totalCount = items.reduce(
+    (sum: number, item: CartItemsType) => sum + item.count,
+    0,
+  );
 
   if (!totalPrice) {
     return <CartEmpty />;
@@ -98,9 +101,9 @@ export const Cart: React.FC = () => {
           </div>
         </div>
         <div className='content__items'>
-          {
-            items.map((item: any) => <CartItem key={item.id} {...item} />)
-          }
+          {items.map((item: CartItemsType) => (
+            <CartItem key={item.id} {...item} />
+          ))}
         </div>
         <div className='cart__bottom'>
           <div className='cart__bottom-details'>
