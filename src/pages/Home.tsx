@@ -3,7 +3,6 @@ import { Categories } from '../components/Categories';
 import { Sort } from '../components/Sort';
 import { Skeleton } from '../components/Pizza/Skeleton';
 import { Pizza } from '../components/Pizza';
-import { useSearchParams } from 'react-router-dom';
 import {
   fetchPizzas,
   PizzaItemType,
@@ -11,15 +10,20 @@ import {
 } from '../store/slices/pizzasSlice';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { useAppDispatch } from '../hooks/useAppDispatch';
+import {
+  selectCategory,
+  selectSearch,
+  selectSortOrder,
+  selectSortProperty,
+} from '../store/slices/filterSlice';
 
 export const Home: React.FC = () => {
   const { items, status } = useAppSelector(selectPizzasData);
+  const category = useAppSelector(selectCategory);
+  const search = useAppSelector(selectSearch);
+  const sort = useAppSelector(selectSortProperty);
+  const order = useAppSelector(selectSortOrder);
   const dispatch = useAppDispatch();
-
-  const [searchParams] = useSearchParams();
-  const searchQuery = searchParams.get('search') || '';
-  const categoryQuery = searchParams.get('category') || '';
-  const sortQuery = searchParams.get('sortBy') || '';
 
   const pizzasSkeleton = [...new Array(4)].map((_, index) => <Skeleton key={index} />);
   const pizzas = items.map((pizza: PizzaItemType) => <Pizza key={pizza.id} {...pizza} />);
@@ -27,13 +31,14 @@ export const Home: React.FC = () => {
   useEffect(() => {
     dispatch(
       fetchPizzas({
-        searchQuery,
-        categoryQuery,
-        sortQuery,
+        search,
+        category,
+        sort,
+        order,
       }),
     );
     window.scrollTo(0, 0);
-  }, [dispatch, categoryQuery, sortQuery, searchQuery]);
+  }, [dispatch, category, sort, search, order]);
 
   return (
     <>

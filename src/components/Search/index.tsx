@@ -1,27 +1,30 @@
-import React, { ChangeEvent, useRef, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import styles from './search.module.scss';
 import { useDebounce } from '../../hooks/useDebounce';
-import { useSearchParams } from 'react-router-dom';
+import { setSearch } from '../../store/slices/filterSlice';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
 
 export const Search: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const searchQuery = searchParams.get('search') || '';
-  const [value, setValue] = useState(searchQuery);
-  const debouncedSetSearchParams = useDebounce((value: string) => setSearchParams(value), 500);
+  const [searchValue, setSearchValue] = useState<string>('');
+  const dispatch = useAppDispatch();
+
+  const debounced = useDebounce<string>(searchValue);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
   const onClickClear = () => {
-    setSearchParams({ search: '' });
-    setValue('');
+    dispatch(setSearch(''));
+    setSearchValue('');
     inputRef.current?.focus();
-
   };
 
   const onSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setValue(e.currentTarget.value);
-    debouncedSetSearchParams({ search: e.currentTarget.value });
+    setSearchValue(e.currentTarget.value);
   };
+
+  useEffect(() => {
+    dispatch(setSearch(debounced));
+  }, [dispatch, debounced]);
 
   return (
     <div className={styles.root}>
@@ -62,7 +65,7 @@ export const Search: React.FC = () => {
       <input
         ref={inputRef}
         className={styles.input}
-        value={value}
+        value={searchValue}
         onChange={onSearchChange}
         type='text'
         placeholder={'Поиск пиццы...'}
@@ -73,8 +76,7 @@ export const Search: React.FC = () => {
         viewBox='0 0 20 20'
         xmlns='http://www.w3.org/2000/svg'
       >
-        <path
-          d='M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z' />
+        <path d='M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z' />
       </svg>
     </div>
   );

@@ -22,16 +22,21 @@ type PizzasStateType = {
   status: STATUS;
 };
 
-type fetchPizzasArgsType = Record<string, string>;
+type fetchPizzasArgsType = {
+  search: string;
+  category: number;
+  sort: string;
+  order: string;
+};
 
 export const fetchPizzas = createAsyncThunk<PizzaItemType[], fetchPizzasArgsType>(
   'pizzas/fetchPizzas',
   async params => {
-    const { searchQuery, categoryQuery, sortQuery } = params;
+    const { search, category, sort, order } = params;
     const { data } = await axios.get<PizzaItemType[]>(
-      `https://62a62676b9b74f766a447cc7.mockapi.io/items?search=${searchQuery}&${
-        +categoryQuery > 0 ? `category=${categoryQuery}` : ''
-      }&sortBy=${sortQuery}&order=desc`,
+      `https://62a62676b9b74f766a447cc7.mockapi.io/items?search=${search}&${
+        category > 0 ? `category=${category}` : ''
+      }&sortBy=${sort}&order=${order}`,
     );
     return data;
   },

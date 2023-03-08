@@ -1,16 +1,16 @@
 import React from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useAppDispatch } from '../hooks/useAppDispatch';
+import { selectCategory, setCategory } from '../store/slices/filterSlice';
+import { useAppSelector } from '../hooks/useAppSelector';
 
 const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
 
 export const Categories: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const sortQuery = searchParams.get('sortBy') || '';
-  const categoryQuery = searchParams.get('category') || '';
+  const category = useAppSelector(selectCategory);
+  const dispatch = useAppDispatch();
 
   const onClickCategory = (index: number) => {
-    setSearchParams({ sortBy: sortQuery, category: String(index) });
+    dispatch(setCategory(index));
   };
 
   return (
@@ -19,7 +19,7 @@ export const Categories: React.FC = () => {
         {categories.map((categoryName, index) => (
           <li
             key={index}
-            className={+categoryQuery === index ? 'active' : undefined}
+            className={category === index ? 'active' : undefined}
             onClick={() => onClickCategory(index)}
           >
             {categoryName}
