@@ -26,7 +26,12 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     addItem: (state, action: PayloadAction<CartItemsType>) => {
-      const findItem = state.items.find(obj => obj.id === action.payload.id);
+      const findItem = state.items.find(
+        obj =>
+          obj.id === action.payload.id &&
+          obj.type === action.payload.type &&
+          obj.size === action.payload.size,
+      );
       if (findItem) {
         findItem.count++;
       } else {
@@ -34,23 +39,29 @@ export const cartSlice = createSlice({
       }
       state.totalPrice = state.items.reduce((sum, obj) => obj.price * obj.count + sum, 0);
     },
-    removeItem: (state, action: PayloadAction<number>) => {
-      state.items = state.items.filter(obj => obj.id !== action.payload);
+    removeItem: (state, action: PayloadAction<CartItemsType>) => {
+      const index = state.items.findIndex(
+        obj =>
+          obj.id === action.payload.id &&
+          obj.type === action.payload.type &&
+          obj.size === action.payload.size,
+      );
+      if (index !== -1) {
+        state.items.splice(index, 1);
+      }
       state.totalPrice = state.items.reduce((sum, obj) => obj.price * obj.count + sum, 0);
     },
     clearItems: state => {
       state.items = [];
       state.totalPrice = 0;
     },
-    plusItem: (state, action: PayloadAction<number>) => {
-      const findItem = state.items.find(obj => obj.id === action.payload);
-      if (findItem) {
-        findItem.count++;
-      }
-      state.totalPrice = state.items.reduce((sum, obj) => obj.price * obj.count + sum, 0);
-    },
-    minusItem: (state, action: PayloadAction<number>) => {
-      const findItem = state.items.find(obj => obj.id === action.payload);
+    minusItem: (state, action: PayloadAction<CartItemsType>) => {
+      const findItem = state.items.find(
+        obj =>
+          obj.id === action.payload.id &&
+          obj.type === action.payload.type &&
+          obj.size === action.payload.size,
+      );
       if (findItem) {
         if (findItem.count > 1) findItem.count--;
       }
@@ -60,9 +71,10 @@ export const cartSlice = createSlice({
 });
 
 export const selectCart = (state: RootState) => state.cart;
-export const selectCartItemById = (id: number) => (state: RootState) =>
-  state.cart.items.find(obj => obj.id === id);
+export const selectCartItemByOptions =
+  (id: number, type: string, size: number) => (state: RootState) =>
+    state.cart.items.find(obj => obj.id === id && obj.type === type && obj.size === size);
 
-export const { addItem, removeItem, clearItems, minusItem, plusItem } = cartSlice.actions;
+export const { addItem, removeItem, clearItems, minusItem } = cartSlice.actions;
 
 export default cartSlice.reducer;

@@ -1,24 +1,33 @@
 import React, { useState } from 'react';
-import { addItem, selectCartItemById } from '../../store/slices/cartSlice';
+import { addItem, selectCartItemByOptions } from '../../store/slices/cartSlice';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 
 type PizzaPropsType = {
-  id: number,
-  title: string,
-  price: number,
-  imageUrl: string,
-  sizes: number[],
-  types: number[]
-}
+  id: number;
+  title: string;
+  price: number;
+  imageUrl: string;
+  sizes: number[];
+  types: number[];
+};
 
 const typeNames = ['тонкое', 'традиционное'];
 
-export const Pizza: React.FC<PizzaPropsType> = ({ id, title, price, imageUrl, sizes, types }) => {
-  const dispatch = useAppDispatch();
-  const cartItem = useAppSelector(selectCartItemById(id));
+export const Pizza: React.FC<PizzaPropsType> = ({
+  id,
+  title,
+  price,
+  imageUrl,
+  sizes,
+  types,
+}) => {
   const [activeType, setActiveType] = useState(0);
   const [activeSize, setActiveSize] = useState(0);
+  const dispatch = useAppDispatch();
+  const cartItem = useAppSelector(
+    selectCartItemByOptions(id, typeNames[activeType], sizes[activeSize]),
+  );
 
   const addedCount = cartItem ? cartItem.count : 0;
 

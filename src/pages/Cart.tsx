@@ -2,7 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { CartItem } from '../components/CartItem';
 import { CartEmpty } from '../components/CartEmpty';
-import { CartItemsType, clearItems, selectCart } from '../store/slices/cartSlice';
+import {
+  addItem,
+  CartItemsType,
+  clearItems,
+  minusItem,
+  removeItem,
+  selectCart,
+} from '../store/slices/cartSlice';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
 
@@ -18,6 +25,18 @@ export const Cart: React.FC = () => {
     (sum: number, item: CartItemsType) => sum + item.count,
     0,
   );
+
+  const onClickRemove = (item: CartItemsType) => {
+    dispatch(removeItem(item));
+  };
+
+  const onClickPlus = (item: CartItemsType) => {
+    dispatch(addItem(item));
+  };
+
+  const onClickMinus = (item: CartItemsType) => {
+    dispatch(minusItem(item));
+  };
 
   if (!totalPrice) {
     return <CartEmpty />;
@@ -102,7 +121,13 @@ export const Cart: React.FC = () => {
         </div>
         <div className='content__items'>
           {items.map((item: CartItemsType) => (
-            <CartItem key={item.id} {...item} />
+            <CartItem
+              key={item.id + item.type + item.size}
+              item={item}
+              onClickRemove={() => onClickRemove(item)}
+              onClickPlus={() => onClickPlus(item)}
+              onClickMinus={() => onClickMinus(item)}
+            />
           ))}
         </div>
         <div className='cart__bottom'>
